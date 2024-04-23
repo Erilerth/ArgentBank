@@ -1,3 +1,9 @@
+import './_landingPage.scss';
+
 export default function LandingPage() {
-  return <h2>hello world</h2>;
+  return (
+    <main>
+      <h2>hello world</h2>
+    </main>
+  );
 }
