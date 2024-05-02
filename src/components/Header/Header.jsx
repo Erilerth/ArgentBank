@@ -1,5 +1,5 @@
 import './_header.scss';
-import Logo from '../../assets/images/header/argentBankLogo.png';
+import Logo from '../../assets/images/header/argentBankLogo.webp';
 import { useLocation } from 'react-router-dom';
 
 export default function Header() {
