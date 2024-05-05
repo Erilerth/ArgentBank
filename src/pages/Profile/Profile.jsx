@@ -2,13 +2,9 @@ import './_profile.scss';
 import MockAccount from '../../data/mockAccount.json';
 import Account from '../../components/Account/Account';
 import { useSelector } from 'react-redux';
-import {
-  selectCurrentUser,
-  selectCurrentToken,
-} from '../../features/auth/authSlice';
+import { selectCurrentToken } from '../../features/auth/authSlice';
 
 export default function Profile() {
-  const user = useSelector(selectCurrentUser);
   const token = useSelector(selectCurrentToken);
 
   const tokenAbbr = `${token?.slice(0, 9)}...`;
@@ -20,7 +16,7 @@ export default function Profile() {
         <h1>
           Welcome back
           <br />
-          {user}
+          test
         </h1>
         <button className='edit-button'>Edit Name</button>
       </div>

@@ -1,13 +1,9 @@
 import './_header.scss';
 import Logo from '../../assets/images/header/argentBankLogo.webp';
 import { useSelector } from 'react-redux';
-import {
-  selectCurrentToken,
-  selectCurrentUser,
-} from '../../features/auth/authSlice';
+import { selectCurrentToken } from '../../features/auth/authSlice';
 
 export default function Header() {
-  const user = useSelector(selectCurrentUser);
   const token = useSelector(selectCurrentToken);
 
   return (
@@ -24,7 +20,7 @@ export default function Header() {
         <div>
           <a className='main-nav-item' href={token ? '/profile' : '/login'}>
             <i className='fa fa-user-circle'></i>
-            {token ? user : 'Sign In'}
+            {token ? 'test' : 'Sign In'}
           </a>
           {token && (
             <a className='main-nav-item' href='./index.html'>
