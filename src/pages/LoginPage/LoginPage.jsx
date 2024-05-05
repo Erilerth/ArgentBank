@@ -1,37 +1,30 @@
+import { useState, useEffect } from 'react';
 import './_loginPage.scss';
-import { useRef, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setCredentials } from '../../features/auth/authSlice';
-import { useLoginMutation } from '../../features/auth/authApiSlice';
-import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
-  const userRef = useRef();
-  const errRef = useRef();
-  const [user, setUser] = useState('');
-  const [pwd, setPwd] = useState('');
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
   const [errMsg, setErrMsg] = useState('');
-  const navigate = useNavigate();
 
-  const [login, { isLogin }] = useLoginMutation();
-  const dispatch = useDispatch();
+  const { username, password } = formData;
 
-  useEffect(() => {
-    userRef.current.focus();
-  }, []);
+  const handleChange = (evt) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [evt.target.name]: evt.target.value,
+    }));
+  };
 
   useEffect(() => {
     setErrMsg('');
-  }, [user, pwd]);
+  }, [formData]);
 
-  const handleSubmit = async (evt) => {
-    evt.preventDefault();
+  const handleSubmit = (evt) => {
     try {
-      const userData = await login({ user, pwd }).unwrap();
-      dispatch(setCredentials({ ...userData, user }));
-      setUser('');
-      setPwd('');
-      navigate('/');
+      evt.preventDefault();
+      console.log(formData);
     } catch (err) {
       if (!err?.originalStatus) {
         setErrMsg('No server Response');
@@ -42,20 +35,11 @@ export default function LoginPage() {
       } else {
         setErrMsg('Login Failed');
       }
-      errRef.current.focus();
     }
   };
-
-  const handleUserInput = (evt) => setUser(evt.target.value);
-  const handlePwdInput = (evt) => setPwd(evt.target.value);
-
-  const content = isLogin ? (
-    <h1>Loading...</h1>
-  ) : (
+  return (
     <main className='main bg-dark'>
       <section className='sign-in-content'>
-        <p ref={errRef} className={errMsg ? 'errmsg' : 'sr-only'}></p>
-
         <i className='fa fa-user-circle sign-in-icon'></i>
         <h1>Sign In</h1>
         <form onSubmit={handleSubmit}>
@@ -64,10 +48,9 @@ export default function LoginPage() {
             <input
               type='text'
               id='username'
-              ref={userRef}
-              value={user}
-              onChange={handleUserInput}
-              autoComplete='off'
+              name='username'
+              value={username}
+              onChange={handleChange}
             />
           </div>
           <div className='input-wrapper'>
@@ -75,20 +58,20 @@ export default function LoginPage() {
             <input
               type='password'
               id='password'
-              value={pwd}
-              onChange={handlePwdInput}
               required
+              name='password'
+              value={password}
+              onChange={handleChange}
             />
           </div>
           <div className='input-remember'>
             <input type='checkbox' id='remember-me' />
             <label htmlFor='remember-me'>Remember me</label>
           </div>
+          <p className='err-msg'>{errMsg}</p>
           <button className='sign-in-button'>Sign In</button>
         </form>
       </section>
     </main>
   );
-
-  return content;
 }
