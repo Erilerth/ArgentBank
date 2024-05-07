@@ -7,7 +7,7 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import Profile from './pages/Profile/Profile';
-import RequireAuth from './features/auth/RequireAuth';
+// import RequireAuth from './features/auth/RequireAuth';
 import ErrPage from './pages/ErrPage/ErrPage';
 
 function App() {
@@ -22,9 +22,9 @@ function App() {
           <Route path='*' element={<ErrPage />} />
 
           {/* Protected routes */}
-          <Route element={<RequireAuth />}>
-            <Route path='profile' element={<Profile />} />
-          </Route>
+          <Route path='profile' element={<Profile />} />
+          {/* <Route element={<RequireAuth />}>
+          </Route> */}
         </Route>
       </Routes>
       <Footer />

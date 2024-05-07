@@ -1,14 +1,24 @@
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { login, reset } from '../../features/auth/authSlice';
+import { useNavigate } from 'react-router-dom';
 import './_loginPage.scss';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: '',
   });
   const [errMsg, setErrMsg] = useState('');
 
-  const { username, password } = formData;
+  const { email, password } = formData;
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { user, isSuccess, isError, message } = useSelector(
+    (state) => state.auth
+  );
 
   const handleChange = (evt) => {
     setFormData((prevState) => ({
@@ -18,25 +28,32 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
+    if (isError) {
+      setErrMsg(message);
+    }
+
+    if (isSuccess || user) {
+      navigate('/profile');
+    }
+
+    dispatch(reset());
+  }, [isError, isSuccess, user, message, navigate, dispatch]);
+
+  useEffect(() => {
     setErrMsg('');
   }, [formData]);
 
   const handleSubmit = (evt) => {
-    try {
-      evt.preventDefault();
-      console.log(formData);
-    } catch (err) {
-      if (!err?.originalStatus) {
-        setErrMsg('No server Response');
-      } else if (err.originalStatus?.status === 400) {
-        setErrMsg('Missing Username or Password');
-      } else if (err.originalStatus?.status === 401) {
-        setErrMsg('Unauthorized');
-      } else {
-        setErrMsg('Login Failed');
-      }
-    }
+    evt.preventDefault();
+
+    const userData = {
+      email,
+      password,
+    };
+
+    dispatch(login(userData));
   };
+
   return (
     <main className='main bg-dark'>
       <section className='sign-in-content'>
@@ -44,12 +61,12 @@ export default function LoginPage() {
         <h1>Sign In</h1>
         <form onSubmit={handleSubmit}>
           <div className='input-wrapper'>
-            <label htmlFor='username'>Username</label>
+            <label htmlFor='email'>Username</label>
             <input
               type='text'
-              id='username'
-              name='username'
-              value={username}
+              id='email'
+              name='email'
+              value={email}
               onChange={handleChange}
             />
           </div>
