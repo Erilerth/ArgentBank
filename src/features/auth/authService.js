@@ -14,8 +14,15 @@ const login = async (userData) => {
   return response.data;
 };
 
-const getUser = async (userData) => {
-  const response = await axios.post(`${API_URL}${getUserEndpoint}`, userData);
+const getUser = async () => {
+  const token = JSON.parse(localStorage.getItem('token'));
+  const response = await axios.post(
+    `${API_URL}${getUserEndpoint}`,
+    {},
+    {
+      headers: { Authorization: `Bearer ${token.body.token}` },
+    }
+  );
 
   if (response.data) {
     localStorage.setItem('user', JSON.stringify(response.data));

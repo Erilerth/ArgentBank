@@ -2,10 +2,12 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import authService from './authService';
 
 const user = JSON.parse(localStorage.getItem('user'));
+const token = JSON.parse(localStorage.getItem('token'));
 
 const initialState = {
-  email: null,
-  id: user ? user : null,
+  firstName: user ? user.body.firstName : '',
+  lastName: user ? user.body.lastName : '',
+  token: token ? token.body.token : null,
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -14,8 +16,9 @@ const initialState = {
 
 export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
   try {
-    const response = await authService.login(user);
-    return response;
+    const tokenRes = await authService.login(user);
+    const userRes = await authService.getUser();
+    return userRes, tokenRes;
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) ||
@@ -25,11 +28,6 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
     return thunkAPI.rejectWithValue(message);
   }
 });
-
-export const changeUsername = createAsyncThunk(
-  'auth/changeUsername',
-  async (user, thunkAPI) => {}
-);
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -61,5 +59,8 @@ export const authSlice = createSlice({
   },
 });
 
+export const selectCurrentFirstName = (state) => state.auth.firstName;
+export const selectCurrentLastName = (state) => state.auth.lastName;
+export const selectCurrentToken = (state) => state.auth.token;
 export const { reset } = authSlice.actions;
 export default authSlice.reducer;
