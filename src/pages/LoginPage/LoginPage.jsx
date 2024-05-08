@@ -1,73 +1,71 @@
-import './_loginPage.scss';
-import { useRef, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setCredentials } from '../../features/auth/authSlice';
-import { useLoginMutation } from '../../features/auth/authApiSlice';
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { login, reset } from '../../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
+import './_loginPage.scss';
 
 export default function LoginPage() {
-  const userRef = useRef();
-  const errRef = useRef();
-  const [user, setUser] = useState('');
-  const [pwd, setPwd] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
   const [errMsg, setErrMsg] = useState('');
+
+  const { email, password } = formData;
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [login, { isLogin }] = useLoginMutation();
-  const dispatch = useDispatch();
+  const { isSuccess, isError, message } = useSelector((state) => state.auth);
+
+  const handleChange = (evt) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [evt.target.name]: evt.target.value,
+    }));
+  };
 
   useEffect(() => {
-    userRef.current.focus();
-  }, []);
+    if (isError) {
+      setErrMsg(message);
+    }
+
+    if (isSuccess) {
+      navigate('/profile');
+    }
+
+    dispatch(reset());
+  }, [isError, isSuccess, message, navigate, dispatch]);
 
   useEffect(() => {
     setErrMsg('');
-  }, [user, pwd]);
+  }, [formData]);
 
-  const handleSubmit = async (evt) => {
+  const handleSubmit = (evt) => {
     evt.preventDefault();
-    try {
-      const userData = await login({ user, pwd }).unwrap();
-      dispatch(setCredentials({ ...userData, user }));
-      setUser('');
-      setPwd('');
-      navigate('/');
-    } catch (err) {
-      if (!err?.originalStatus) {
-        setErrMsg('No server Response');
-      } else if (err.originalStatus?.status === 400) {
-        setErrMsg('Missing Username or Password');
-      } else if (err.originalStatus?.status === 401) {
-        setErrMsg('Unauthorized');
-      } else {
-        setErrMsg('Login Failed');
-      }
-      errRef.current.focus();
-    }
+
+    const userData = {
+      email,
+      password,
+    };
+
+    dispatch(login(userData));
   };
 
-  const handleUserInput = (evt) => setUser(evt.target.value);
-  const handlePwdInput = (evt) => setPwd(evt.target.value);
-
-  const content = isLogin ? (
-    <h1>Loading...</h1>
-  ) : (
+  return (
     <main className='main bg-dark'>
       <section className='sign-in-content'>
-        <p ref={errRef} className={errMsg ? 'errmsg' : 'sr-only'}></p>
-
         <i className='fa fa-user-circle sign-in-icon'></i>
         <h1>Sign In</h1>
         <form onSubmit={handleSubmit}>
           <div className='input-wrapper'>
-            <label htmlFor='username'>Username</label>
+            <label htmlFor='email'>Username</label>
             <input
               type='text'
-              id='username'
-              ref={userRef}
-              value={user}
-              onChange={handleUserInput}
-              autoComplete='off'
+              id='email'
+              name='email'
+              value={email}
+              onChange={handleChange}
             />
           </div>
           <div className='input-wrapper'>
@@ -75,20 +73,20 @@ export default function LoginPage() {
             <input
               type='password'
               id='password'
-              value={pwd}
-              onChange={handlePwdInput}
               required
+              name='password'
+              value={password}
+              onChange={handleChange}
             />
           </div>
           <div className='input-remember'>
             <input type='checkbox' id='remember-me' />
             <label htmlFor='remember-me'>Remember me</label>
           </div>
+          <p className='err-msg'>{errMsg}</p>
           <button className='sign-in-button'>Sign In</button>
         </form>
       </section>
     </main>
   );
-
-  return content;
 }
