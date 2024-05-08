@@ -5,8 +5,10 @@ const user = JSON.parse(localStorage.getItem('user'));
 const token = JSON.parse(localStorage.getItem('token'));
 
 const initialState = {
-  firstName: user ? user.body.firstName : '',
-  lastName: user ? user.body.lastName : '',
+  id: user ? user.body.id : null,
+  firstName: user ? user.body.firstName : null,
+  lastName: user ? user.body.lastName : null,
+  username: user ? user.body.userName : null,
   token: token ? token.body.token : null,
   isError: false,
   isSuccess: false,
@@ -28,6 +30,15 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
     return thunkAPI.rejectWithValue(message);
   }
 });
+
+export const logout = createAsyncThunk('auth/logout', async () => {
+  await authService.logout();
+});
+
+export const changeUsername = createAsyncThunk(
+  'auth/changeUsername',
+  async () => {}
+);
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -61,6 +72,7 @@ export const authSlice = createSlice({
 
 export const selectCurrentFirstName = (state) => state.auth.firstName;
 export const selectCurrentLastName = (state) => state.auth.lastName;
+export const selectCurrentUsername = (state) => state.auth.username;
 export const selectCurrentToken = (state) => state.auth.token;
 export const { reset } = authSlice.actions;
 export default authSlice.reducer;

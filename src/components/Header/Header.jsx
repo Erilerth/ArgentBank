@@ -1,14 +1,28 @@
 import './_header.scss';
 import Logo from '../../assets/images/header/argentBankLogo.webp';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   selectCurrentFirstName,
   selectCurrentToken,
+  logout,
+  reset,
 } from '../../features/auth/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function Header() {
   const token = useSelector(selectCurrentToken);
   const firstName = useSelector(selectCurrentFirstName);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const onLogout = () => {
+    dispatch(logout());
+    dispatch(reset());
+    navigate('/');
+    window.location.reload();
+  };
+
   return (
     <header>
       <nav className='main-nav'>
@@ -27,10 +41,10 @@ export default function Header() {
           </a>
 
           {token && (
-            <a className='main-nav-item' href='./index.html'>
+            <button className='main-nav-item' onClick={onLogout}>
               <i className='fa fa-sign-out'></i>
               Sign Out
-            </a>
+            </button>
           )}
         </div>
       </nav>

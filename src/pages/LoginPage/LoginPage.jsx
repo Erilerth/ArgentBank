@@ -16,7 +16,9 @@ export default function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isSuccess, isError, message } = useSelector((state) => state.auth);
+  const { isSuccess, isError, message, id } = useSelector(
+    (state) => state.auth
+  );
 
   const handleChange = (evt) => {
     setFormData((prevState) => ({
@@ -30,12 +32,13 @@ export default function LoginPage() {
       setErrMsg(message);
     }
 
-    if (isSuccess) {
+    if (isSuccess || id) {
       navigate('/profile');
+      window.location.reload();
     }
 
     dispatch(reset());
-  }, [isError, isSuccess, message, navigate, dispatch]);
+  }, [isError, isSuccess, message, navigate, dispatch, id]);
 
   useEffect(() => {
     setErrMsg('');

@@ -30,9 +30,15 @@ const getUser = async () => {
   return response.data;
 };
 
+const logout = () => {
+  localStorage.removeItem('user');
+  localStorage.removeItem('token');
+};
+
 const authService = {
   login,
   getUser,
+  logout,
 };
 
 export default authService;
