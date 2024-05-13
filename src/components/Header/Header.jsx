@@ -2,16 +2,16 @@ import './_header.scss';
 import Logo from '../../assets/images/header/argentBankLogo.webp';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  selectCurrentFirstName,
   selectCurrentToken,
   logout,
   reset,
+  selectCurrentUsername,
 } from '../../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 export default function Header() {
+  const username = useSelector(selectCurrentUsername);
   const token = useSelector(selectCurrentToken);
-  const firstName = useSelector(selectCurrentFirstName);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ export default function Header() {
         <div>
           <a className='main-nav-item' href={token ? '/profile' : '/login'}>
             <i className='fa fa-user-circle'></i>
-            {token ? firstName : 'Sign In'}
+            {token ? username : 'Sign In'}
           </a>
 
           {token && (

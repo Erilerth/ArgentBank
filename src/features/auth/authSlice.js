@@ -32,12 +32,16 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
 });
 
 export const logout = createAsyncThunk('auth/logout', async () => {
-  await authService.logout();
+  authService.logout();
 });
 
 export const changeUsername = createAsyncThunk(
   'auth/changeUsername',
-  async () => {}
+  async (userName) => {
+    const response = await authService.changeUsername(userName);
+
+    return response;
+  }
 );
 
 export const authSlice = createSlice({
@@ -66,6 +70,17 @@ export const authSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
         state.user = null;
+      })
+      .addCase(changeUsername.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(changeUsername.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(changeUsername.rejected, (state) => {
+        state.isLoading = false;
+        state.isError = true;
       });
   },
 });
