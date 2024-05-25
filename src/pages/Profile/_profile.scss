@@ -10,3 +10,30 @@
   color: #fff;
   margin-bottom: 2rem;
 }
+
+form {
+  display: table;
+  margin: auto;
+  margin-top: 10px;
+}
+
+form section {
+  margin-bottom: 10px;
+}
+
+.profile__form-field {
+  display: table-row;
+}
+
+label,
+input {
+  display: table-cell;
+}
+
+.form-button {
+  font-weight: bold;
+  border-color: #00bc77;
+  background-color: #00bc77;
+  color: #fff;
+  margin-left: 10px;
+}

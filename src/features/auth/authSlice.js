@@ -74,13 +74,10 @@ export const authSlice = createSlice({
       .addCase(changeUsername.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(changeUsername.fulfilled, (state) => {
+      .addCase(changeUsername.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-      })
-      .addCase(changeUsername.rejected, (state) => {
-        state.isLoading = false;
-        state.isError = true;
+        state.username = action.payload.body.userName;
       });
   },
 });

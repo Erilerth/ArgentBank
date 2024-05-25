@@ -54,7 +54,6 @@ export default function LoginPage() {
 
     dispatch(login(userData));
   };
-
   return (
     <main className='main bg-dark'>
       <section className='sign-in-content'>

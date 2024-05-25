@@ -8,7 +8,7 @@ import {
   selectCurrentLastName,
   selectCurrentUsername,
 } from '../../features/auth/authSlice';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export default function Profile() {
   const [usernameForm, setUsernameForm] = useState(false);
@@ -26,14 +26,6 @@ export default function Profile() {
   const dispatch = useDispatch();
   const { isSuccess } = useSelector((state) => state.auth);
 
-  while (userNameRedux === '') {
-    window.location.reload();
-  }
-
-  useEffect(() => {
-    if (isSuccess) window.location.reload();
-  });
-
   const handleChange = (evt) => {
     setChangeUsernameForm((prevState) => ({
       ...prevState,
@@ -47,10 +39,12 @@ export default function Profile() {
 
   const handleSave = () => {
     dispatch(changeUsername(userName));
+
+    if (isSuccess) setUsernameForm(!usernameForm);
   };
 
   const handleCancel = () => {
-    setUsernameForm(false);
+    setUsernameForm(!usernameForm);
   };
 
   return (
@@ -61,13 +55,15 @@ export default function Profile() {
           <br />
           {userNameRedux}
         </h1>
-        <button className='edit-button' onClick={() => setUsernameForm(true)}>
+        <button
+          className='edit-button'
+          onClick={() => setUsernameForm(!usernameForm)}>
           Edit Name
         </button>
         {usernameForm && (
           <form onSubmit={handleSubmit}>
             <section>
-              <div>
+              <div className='profile__form-field'>
                 <label htmlFor='userName'>User name: </label>
                 <input
                   type='text'
@@ -77,7 +73,7 @@ export default function Profile() {
                   onChange={handleChange}
                 />
               </div>
-              <div>
+              <div className='profile__form-field'>
                 <label htmlFor='userName'>First name: </label>
                 <input
                   type='text'
@@ -88,7 +84,7 @@ export default function Profile() {
                   disabled
                 />
               </div>
-              <div>
+              <div className='profile__form-field'>
                 <label htmlFor='userName'>Last name: </label>
                 <input
                   type='text'
@@ -100,8 +96,12 @@ export default function Profile() {
                 />
               </div>
             </section>
-            <button onClick={handleSave}>Save</button>
-            <button onClick={handleCancel}>Cancel</button>
+            <button className='form-button' onClick={handleSave}>
+              Save
+            </button>
+            <button className='form-button' onClick={handleCancel}>
+              Cancel
+            </button>
           </form>
         )}
       </div>
